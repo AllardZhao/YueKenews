@@ -1,0 +1,98 @@
+{% extends 'admin/base.html' %}
+{% block title %}
+<title>新闻管理首页</title>
+{% endblock %}
+{% block content %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>编号</th>
+      <th>新闻标题</th>
+      <th>类别</th>
+      <th>添加时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Returns a Pagination object.通过items获取对象数据 -->
+  {% for new_obj in news_list.items %}
+    <tr>
+      <td>{{ new_obj.id }}</td>
+      <td>{{ new_obj.title }}</td>
+      <td>{{ new_obj.types }}</td>
+      <td>{{ new_obj.created_at }}</td>
+      <td><a class="btn btn-info" href="{{ url_for('update', pk=new_obj.id) }}">修改</a>
+      <a class="btn btn-danger" href="javascript:;" data-url="{{ url_for('delete', pk=new_obj.id) }}">删除</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<nav>
+  <ul class="pagination">
+    {% if news_list.has_prev %}
+    <li><a href="{{ url_for('admin', page=news_list.prev_num) }}">&laquo;</a></li>
+    {% else %}
+    <li class="disabled"><a href="javascript:;">&raquo;</a></li>
+    {% endif %}
+   <!-- 分页循环和跳转 -->
+    {% for page in news_list.iter_pages() %}
+    {% if page == news_list.page %}
+    <li class="active"><a href="javascript:;">{{ page }}</a></li>
+    {% else %}
+    <li><a href="{{ url_for('admin', page=page) }}">{{ page}}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if news_list.has_next %}
+    <li><a href="{{ url_for('admin', page=news_list.next_num ) }}">&raquo;</a></li>
+    {% else %}
+    <li class="disabled"><a href="javascript:;">&raquo;</a></li>
+    {% endif %}
+  </ul>
+</nav>
+<!-- <nav aria-label="Page navigation">
+    <ul class="pagination">
+      <li>
+        {% if news_list.has_prev %}
+        <a href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+        {% else %}
+        <li class="disabled"><a href="javscript:;">&raquo;</a></li>
+        {% endif %}
+      </li>
+      {% for page in news_list.iter_pages() %}
+      <li><a href="{{ url_for('admin', page=page) }}">{{ page }}</a></li>
+      {% endfor %}
+      <li>
+        <a href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav> -->
+{% endblock %}
+{% block extrajs %}
+<script>
+  //jquery
+  $(function(){
+    //给删除class="btn btn-danger" 绑定事件
+    $('.btn-danger').on('click', function(){
+      var _this = $(this);
+      //获取请求链接
+      var url = $(this).attr('data-url');
+      //确认信息
+      if(confirm('确定删除该记录吗？')){
+        //ajax 调用
+        $.post(url, function(data){
+          //处理结果
+          if (data === 'yes'){
+            _this.parents('tr').hide();
+          }else{
+            alert('删除失败');
+          }
+        })
+      }
+    })
+  })
+</script>
+{% endblock  %}
