@@ -7,7 +7,7 @@ from forms import NewsForm
 
 app = Flask(__name__)
 # mysql://username:password@server/db
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost:3306/mysql_news?charset=utf8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost:3306/mysql_wangyinews?charset=utf8'
 # 设置flask app secret key
 app.config['SECRET_KEY'] = 'a random string'
 # 通过app构建一个新的对象
@@ -64,7 +64,7 @@ def admin(page=None):
     # 如果没有传，则表示第一页
     if page is None:
         page = 1
-    # page=第几页，per_page=每页数量
+    # page=第几页，per_page=每页数量,filter_by筛选出is_valid=1数据
     news_list = News.query.filter_by(is_valid=True).paginate(
         page=page, 
         per_page=3)
@@ -91,7 +91,7 @@ def add():
         db.session.commit()
         # 文字提示
         # flash
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin'))  # 跳转到后台首页
     return render_template('admin/add.html', form=form)
 
 
@@ -108,10 +108,12 @@ def update(pk):
         # 获取数据
         new_obj.title = form.title.data
         new_obj.content = form.content.data
+        new_obj.types = form.types.data
+        new_obj.image = form.image.data
         # 保存数据
         db.session.add(new_obj)
         db.session.commit()
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin')) # 跳转到后台首页
     return render_template('admin/update.html', form=form)
 
 
