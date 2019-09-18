@@ -10,8 +10,8 @@
 ```
             pip install flask                    # 安装flask框架
             pip install Flask-SQLAlchemy         # 安装flask的对象关系映射器
-            pip install Flask-WTF                # flask的表单验证模块
-            pip install mysqlclient              # 安装mysql的Python驱动
+            pip install Flask-WTF                # 安装flask的表单验证模块
+            pip install mysqlclient              # 安装mysql的驱动
 ```
 * 创建和初始化数据库
 ```
